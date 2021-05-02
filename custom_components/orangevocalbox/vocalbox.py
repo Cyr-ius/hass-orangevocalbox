@@ -91,7 +91,7 @@ class VocalBox:
                 url=f"{ORANGE_VOCALBOX_URI}/boxes",
             )
         )
-        # _LOGGER.debug(resp.content)
+        _LOGGER.debug(resp.content)
         if resp.status_code != 200:
             raise VocalboxError(
                 f"ERROR ListBoxes - HTTP {resp.status_code} ({resp.reason})", "unknown"
@@ -114,27 +114,26 @@ class VocalBox:
                 url=f"{ORANGE_VOCALBOX_URI}{mUri}",
             )
         )
-        # _LOGGER.debug(resp.content)
+        _LOGGER.debug(resp.content)
         if resp.status_code != 200:
             raise VocalboxError(
                 f"ERROR ListMsg - HTTP {resp.status_code} ({resp.reason})", "unknown"
             )
         for item in resp.json():
-            if item.get("read") is False:
-                message = {
-                    "id": item.get("id"),
-                    "lineid": item.get("lineId"),
-                    "datetime": item.get("timestamp"),
-                    "type": item.get("type"),
-                    "caller": item.get("caller"),
-                    "duration": item.get("duration"),
-                }
-                if item.get("type") == "voiceMsg":
-                    file = item.get("fileUri")
-                    message.update({"mp3file": f"{ORANGE_VOCALBOX_URI}{file}"})
-                    (self._messages["voiceMsg"]).append(message)
-                    continue
-                (self._messages["missedCall"]).append(message)
+            message = {
+                "id": item.get("id"),
+                "lineid": item.get("lineId"),
+                "datetime": item.get("timestamp"),
+                "type": item.get("type"),
+                "caller": item.get("caller"),
+                "duration": item.get("duration"),
+            }
+            if item.get("type") == "voiceMsg":
+                file = item.get("fileUri")
+                message.update({"mp3file": f"{ORANGE_VOCALBOX_URI}{file}"})
+                (self._messages["voiceMsg"]).append(message)
+                continue
+            (self._messages["missedCall"]).append(message)
 
         await self.async_close()
 
@@ -160,7 +159,7 @@ class VocalBox:
                 data=json.dumps(array_del_msg),
             )
         )
-        # _LOGGER.debug(resp.content)
+        _LOGGER.debug(resp.content)
         if resp.status_code != 200:
             raise VocalboxError(
                 f"ERROR DeleteMsg - HTTP {resp.status_code} ({resp.reason})", "unknown"
