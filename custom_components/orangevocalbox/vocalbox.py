@@ -152,8 +152,9 @@ class VocalBox:
         array_del_msg = [
             msg["id"]
             for msg in self._messages[type]
-            if msg.get("lineid") == str(id) or id == "all"
+            if str(msg.get("lineid")) == str(id) or id == "all"
         ]
+        _LOGGER.debug(array_del_msg)
         resp = await self._hass.async_add_executor_job(
             partial(
                 self._session.delete,
