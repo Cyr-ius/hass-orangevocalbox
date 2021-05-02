@@ -1,0 +1,19 @@
+{
+    "config": {
+        "title": "Orange VocalBox",
+        "step": {
+            "user": {
+                "title": "[%key:components::orangevocalbox::config::step::user::title%]",
+                "data": {
+                    "email": "[%key:common::config_flow::data::email%]",
+                    "password": "[%key:common::config_flow::data::password%]"
+                }
+            }
+        },
+        "error": {
+            "login_inccorect": "[%key:components::orangevocalbox::config::error::login_inccorect%]",
+            "unknown": "[%key:common::config_flow::error::unknown%]",
+            "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]"
+        }
+    }
+}

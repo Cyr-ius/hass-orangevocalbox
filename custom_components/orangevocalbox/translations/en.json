@@ -1,0 +1,19 @@
+{
+    "config": {
+        "title": "Orange VocalBox",
+        "step": {
+            "user": {
+                "title": "Check your Orange/Sosh account.",
+                "data": {
+                    "email": "Email",
+                    "password": "Password"
+                }
+            }
+        },
+        "error": {
+            "login_inccorect": "User or password inccorect.",
+            "unknown": "Unknown error occurred.",
+            "cannot_connect": "Can not connect to your account."
+        }
+    }
+}

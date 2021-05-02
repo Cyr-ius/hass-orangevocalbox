@@ -1,0 +1,11 @@
+{
+    "domain": "orangevocalbox",
+    "name": "Orange VocalBox",
+    "config_flow": true,
+    "documentation": "https://github.com/cyr-ius/hass-orangevocalbox",
+    "issue_tracker": "https://github.com/cyr-ius/hass-orangevocalbox/issues",
+    "requirements": [],
+    "dependencies": [],
+    "codeowners": ["@cyr-ius"],
+    "version": "1.0.0"
+}

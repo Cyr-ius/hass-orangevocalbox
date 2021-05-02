@@ -1,0 +1,11 @@
+# Orange Vocalbox service entries description.
+clean:
+  # Description of the service
+  description: "Remove missed call or voice message"
+  fields:
+    id:
+      description: "Number of message or type 'all' for everything"
+      example: "1"
+    type:
+      description: "Message type 'missedCall', 'voiceMsg' or 'all' for the both"
+      example: "missedcall"

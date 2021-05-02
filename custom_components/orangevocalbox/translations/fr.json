@@ -1,0 +1,19 @@
+{
+  "config": {
+    "title": "Boite vocale Orange/Sosh",
+    "step": {
+      "user": {
+        "title": "Vérification de votre compte.",
+        "data": {
+          "email": "Mail",
+          "password": "Mot de passe"
+        }
+      }
+    },
+    "error": {
+      "login_inccorect": "Utilisateur ou mot de passe incorrect.",
+      "unknown": "Erreur inconnue.",
+      "cannot_connect": "Impossible de se connecter à votre compte."
+    }
+  }
+}
