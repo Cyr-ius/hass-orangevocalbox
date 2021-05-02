@@ -15,15 +15,18 @@ _LOGGER = logging.getLogger(__name__)
 class VocalBox:
     """Class for Vocal Box."""
 
-    def __init__(self, hass):
+    def __init__(self, hass, mail, password):
         """Init variables."""
         self._hass = hass
         self._session = Session()
         self._session.headers = JSON_HEADER
         self._messages = None
+        self._mail = mail
+        self._password = password
 
-    async def async_connect(self, mail, password):
+    async def async_connect(self):
         """Connect to Orange Vocal Box."""
+        _LOGGER.debug("Open Session")
         resp = await self._hass.async_add_executor_job(self._session.get, ORANGE_URI)
         if resp.status_code != 200:
             raise VocalboxError(
@@ -34,28 +37,31 @@ class VocalBox:
             partial(
                 self._session.post,
                 url=f"{ORANGE_URI}/api/login",
-                data=json.dumps({"login": mail, "params": {}}),
-                cookies=resp.cookies,
+                data=json.dumps({"login": self._mail, "params": {}}),
             )
         )
+        _LOGGER.debug(resp.content)
         if resp.status_code != 200:
             raise VocalboxError(
                 f"ERROR CheckLogin - HTTP {resp.status_code} ({resp.reason})",
                 "cannot_connect",
             )
-
         login = resp.json()
         login_encrypt = login.get("loginEncrypt", None)
-        password = {"login": mail, "loginEncrypt": login_encrypt, "password": password}
+        password = {
+            "login": self._mail,
+            "loginEncrypt": login_encrypt,
+            "password": self._password,
+        }
         if login_encrypt:
             resp = await self._hass.async_add_executor_job(
                 partial(
                     self._session.post,
                     url=f"{ORANGE_URI}/api/password",
                     data=json.dumps(password),
-                    cookies=resp.cookies,
                 )
             )
+            _LOGGER.debug(resp.content)
             if resp.status_code != 200:
                 content = resp.json()
                 raise VocalboxError(
@@ -66,16 +72,26 @@ class VocalBox:
 
         return True
 
+    async def async_close(self):
+        """Close session."""
+        _LOGGER.debug("Close Session")
+        self._session.close()
+
     async def async_fetch_datas(self):
         """Get messages in box."""
+        try:
+            await self.async_connect()
+        except VocalboxError as error:
+            raise error
+
         self._messages = {"voiceMsg": [], "missedCall": [], "messagesUri": None}
         resp = await self._hass.async_add_executor_job(
             partial(
                 self._session.get,
                 url=f"{ORANGE_VOCALBOX_URI}/boxes",
-                cookies=self._session.cookies,
             )
         )
+        # _LOGGER.debug(resp.content)
         if resp.status_code != 200:
             raise VocalboxError(
                 f"ERROR ListBoxes - HTTP {resp.status_code} ({resp.reason})", "unknown"
@@ -96,9 +112,9 @@ class VocalBox:
             partial(
                 self._session.get,
                 url=f"{ORANGE_VOCALBOX_URI}{mUri}",
-                cookies=resp.cookies,
             )
         )
+        # _LOGGER.debug(resp.content)
         if resp.status_code != 200:
             raise VocalboxError(
                 f"ERROR ListMsg - HTTP {resp.status_code} ({resp.reason})", "unknown"
@@ -120,10 +136,17 @@ class VocalBox:
                     continue
                 (self._messages["missedCall"]).append(message)
 
+        await self.async_close()
+
         return self._messages
 
     async def async_delete_datas(self, id, type):
         """Delete message."""
+        try:
+            await self.async_connect()
+        except VocalboxError as error:
+            raise error
+
         mUri = self._messages["messagesUri"]
         array_del_msg = [
             msg["id"]
@@ -135,13 +158,15 @@ class VocalBox:
                 self._session.delete,
                 url=f"{ORANGE_VOCALBOX_URI}{mUri}",
                 data=json.dumps(array_del_msg),
-                cookies=self._session.cookies,
             )
         )
+        # _LOGGER.debug(resp.content)
         if resp.status_code != 200:
             raise VocalboxError(
                 f"ERROR DeleteMsg - HTTP {resp.status_code} ({resp.reason})", "unknown"
             )
+
+        await self.async_close()
 
 
 class VocalboxError(Exception):

@@ -30,14 +30,16 @@ class OrangeVocalBoxFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         errors = {}
         if user_input is not None:
             try:
-                vocalbox = VocalBox(self.hass)
-                await vocalbox.async_connect(
-                    user_input[CONF_EMAIL], user_input[CONF_PASSWORD]
+                vocalbox = VocalBox(
+                    self.hass, user_input[CONF_EMAIL], user_input[CONF_PASSWORD]
                 )
                 await self.async_set_unique_id(user_input[CONF_EMAIL])
                 self._abort_if_unique_id_configured()
+                await vocalbox.async_connect()
             except VocalboxError as error:
                 errors["base"] = error.args[1]
+            finally:
+                await vocalbox.async_close()
 
             if "base" not in errors:
                 return self.async_create_entry(title="Orange VocalBox", data=user_input)

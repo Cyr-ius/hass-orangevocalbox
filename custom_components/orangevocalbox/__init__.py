@@ -25,13 +25,9 @@ async def async_setup(hass, config):
 
 async def async_setup_entry(hass, config_entry):
     """Set up VocalBox as config entry."""
-    try:
-        vocalbox = VocalBox(hass)
-        await vocalbox.async_connect(
-            config_entry.data[CONF_EMAIL], config_entry.data[CONF_PASSWORD]
-        )
-    except VocalboxError as error:
-        raise PlatformNotReady from error
+    vocalbox = VocalBox(
+        hass, config_entry.data[CONF_EMAIL], config_entry.data[CONF_PASSWORD]
+    )
 
     coordinator = DataUpdateCoordinator(
         hass,
@@ -64,6 +60,7 @@ async def async_setup_entry(hass, config_entry):
         """Handle restart service call."""
         try:
             await vocalbox.async_delete_datas(call.data[ATTR_ID], call.data[ATTR_TYPE])
+            await coordinator.async_refresh()
         except VocalboxError as error:
             _LOGGER.error(error)
 
@@ -76,5 +73,5 @@ async def async_setup_entry(hass, config_entry):
 
 async def async_unload_entry(hass, config_entry):
     """Unload a config entry."""
-    hass.config_entries.async_forward_entry_unload(config_entry, "binary_sensor")
+    await hass.config_entries.async_forward_entry_unload(config_entry, "binary_sensor")
     return True
