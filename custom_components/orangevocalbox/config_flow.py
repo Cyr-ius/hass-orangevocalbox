@@ -34,6 +34,8 @@ class OrangeVocalBoxFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 await vocalbox.async_connect(
                     user_input[CONF_EMAIL], user_input[CONF_PASSWORD]
                 )
+                await self.async_set_unique_id(user_input[CONF_EMAIL])
+                self._abort_if_unique_id_configured()
             except VocalboxError as error:
                 errors["base"] = error.args[1]
 
