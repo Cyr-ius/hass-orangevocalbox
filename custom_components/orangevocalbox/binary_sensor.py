@@ -14,7 +14,7 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Defer binary sensor setup to the shared sensor module."""
     coordinator = hass.data[DOMAIN]
-    async_add_entities([VocalStatus(coordinator), MissedStatus(coordinator)], True)
+    async_add_entities([VocalStatus(coordinator), MissedStatus(coordinator)])
 
 
 class VocalStatus(BinarySensorEntity):
