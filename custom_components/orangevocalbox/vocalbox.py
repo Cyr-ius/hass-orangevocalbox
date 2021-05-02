@@ -119,10 +119,12 @@ class VocalBox:
             raise VocalboxError(
                 f"ERROR ListMsg - HTTP {resp.status_code} ({resp.reason})", "unknown"
             )
+        i = 0
         for item in resp.json():
+            i += 1
             message = {
                 "id": item.get("id"),
-                "lineid": item.get("lineId"),
+                "lineid": i,
                 "datetime": item.get("timestamp"),
                 "type": item.get("type"),
                 "caller": item.get("caller"),

@@ -112,9 +112,8 @@ class MissedStatus(BinarySensorEntity):
     def extra_state_attributes(self):
         """Return the device state attributes."""
         attributs = {}
-        cnt = 0
         for attr in self.coordinator.data.get("missedCall"):
-            cnt += 1
+            cnt = attr["lineid"]
             attributs.update(
                 {
                     f"id_{cnt}": attr["lineid"],
