@@ -44,20 +44,18 @@ class VocalStatus(BinarySensorEntity):
     @property
     def extra_state_attributes(self):
         """Return the device state attributes."""
-        attributs = {}
-        cnt = 0
+        messages = []
         for attr in self.coordinator.data.get("voiceMsg"):
-            cnt += 1
-            attributs.update(
+            messages.append(
                 {
-                    f"id_{cnt}": attr["lineid"],
-                    f"phone_number_{cnt}": attr["caller"],
-                    f"datetime_{cnt}": attr["datetime"],
-                    f"duration_{cnt}": attr["duration"],
-                    f"msg_{cnt}": attr["mp3file"],
+                    f"id": attr["lineid"],
+                    f"phone_number": attr["caller"],
+                    f"datetime": attr["datetime"],
+                    f"duration": attr["duration"],
+                    f"link": attr["mp3file"],
                 }
             )
-        return attributs
+        return {"messages": messages}
 
     @property
     def available(self) -> bool:
@@ -111,17 +109,16 @@ class MissedStatus(BinarySensorEntity):
     @property
     def extra_state_attributes(self):
         """Return the device state attributes."""
-        attributs = {}
+        misscall = []
         for attr in self.coordinator.data.get("missedCall"):
-            cnt = attr["lineid"]
-            attributs.update(
+            misscall.append(
                 {
-                    f"id_{cnt}": attr["lineid"],
-                    f"phone_number_{cnt}": attr["caller"],
-                    f"datetime_{cnt}": attr["datetime"],
+                    "id": attr["lineid"],
+                    "phone_number": attr["caller"],
+                    "datetime": attr["datetime"],
                 }
             )
-        return attributs
+        return {"messages": misscall}
 
     @property
     def available(self) -> bool:
