@@ -7,36 +7,38 @@ blueprint:
     vocal_message:
       name: Vocal message
       selector:
-        target:
           entity:
             domain: binary_sensor
     missed_caller:
       name: Missed caller
       selector:
-        target:
           entity:
             domain: binary_sensor
 mode: single
 
+variables:
+  vocalmsg:         !input vocal_message
+  missedcall:       !input missed_caller
+  attr_vocalmsg:    "{{ state_attr( vocalmsg, 'messages' ) }}"
+  attr_missedcall:  "{{ state_attr( missedcall, 'messages' ) }}"
 
 trigger:
-  - platform: state
-    entity_id: !input vocal_message
-    to: 'on'
-  - platform: state
-    entity_id: !input missed_caller
-    to: 'on'
+- platform: state
+  entity_id: !input vocal_message
+  to: 'on'
+- platform: state
+  entity_id: !input missed_caller
+  to: 'on'
 
 action:
-  - service: persistent_notification.create
-    data:
-      title: Messagerie vocale
-      message: >-
-        {% for attr in state_attr('!input vocal_message', 'messages') %}
+- service: persistent_notification.create
+  data:
+    title: Messagerie vocale
+    message: '{% for attr in attr_vocalmsg %}
 
-        **Message du** [+{{attr.phone_number}}]({{ attr.link }})
-        ({{attr.duration }}s) {% endfor %}
+      **Message du** [+{{attr.phone_number}}]({{ attr.link }}) ({{attr.duration }}s)
+      {% endfor %}
 
-        {% for attr in state_attr('!input missed_caller', 'messages') %}
+      {% for attr in attr_missedcall %}
 
-        **Message en absence du** +{{attr.phone_number}} {% endfor %}
+      **Message en absence du** +{{attr.phone_number}} {% endfor %}'
