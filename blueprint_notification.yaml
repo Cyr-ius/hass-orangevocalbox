@@ -1,6 +1,6 @@
 blueprint:
   name: Orange Vocalbox notification
-  description: Create persistent notfication to HomeAssistant
+  description: Create persistent notfication to HomeAssistant.
   domain: automation
   source_url: https://raw.githubusercontent.com/Cyr-ius/hass-orangevocalbox/master/blueprint_notification.yaml
   input:
