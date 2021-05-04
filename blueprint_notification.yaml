@@ -1,0 +1,41 @@
+blueprint:
+  name: Orange Vocalbox notification
+  description: Create persistent notfication to HomeAssistant
+  domain: automation
+  source_url: https://github.com/cyr-ius/hass-orangevocalbox/blueprint_notification.yaml
+  input:
+    vocal_message:
+      name: Vocal message
+      selector:
+        entity:
+          domain: binary_sensor
+    missed_caller:
+      name: Missed caller
+      selector:
+        target:
+          entity:
+            domain: binary_sensor
+mode: single
+
+
+trigger:
+  - platform: state
+    entity_id: !input vocal_message
+    to: 'on'
+  - platform: state
+    entity_id: !input missed_caller
+    to: 'on'
+
+action:
+  - service: persistent_notification.create
+    data:
+      title: Messagerie vocale
+      message: >-
+        {% for attr in state_attr('!input vocal_message', 'messages') %}
+
+        **Message du** [+{{attr.phone_number}}]({{ attr.link }})
+        ({{attr.duration }}s) {% endfor %}
+
+        {% for attr in state_attr('!input missed_caller', 'messages') %}
+
+        **Message en absence du** +{{attr.phone_number}} {% endfor %}
