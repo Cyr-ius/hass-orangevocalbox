@@ -7,7 +7,7 @@ blueprint:
     vocal_message:
       name: Vocal message
       selector:
-        entity:
+        target:
           domain: binary_sensor
     missed_caller:
       name: Missed caller
