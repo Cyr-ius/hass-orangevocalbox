@@ -12,7 +12,7 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from .const import ATTR_ID, ATTR_TYPE, DOMAIN, VALUES_TYPE, SERVICE_CLEAN
 from .vocalbox import VocalBox, VocalboxError
 
-SCAN_INTERVAL = timedelta(minutes=15)
+SCAN_INTERVAL = timedelta(minutes=180)
 
 _LOGGER = logging.getLogger(__name__)
 
