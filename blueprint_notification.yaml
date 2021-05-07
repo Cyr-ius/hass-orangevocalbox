@@ -8,11 +8,13 @@ blueprint:
       name: Vocal message
       selector:
           entity:
+            integration: orangevocalbox
             domain: binary_sensor
     missed_caller:
       name: Missed caller
       selector:
           entity:
+            integration: orangevocalbox
             domain: binary_sensor
 mode: single
 
