@@ -12,6 +12,8 @@ With the Orange voicemail, you can view the messages on your answering machine o
 The preferred way to setup the platform is by enabling the discovery component.
 Add your equipment via the Integration menu
 
+[![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=orangevocalbox)
+
 ## Blueprint
 If you want to receive a notification on Homeassistant, here is a Blueprint. 
 
