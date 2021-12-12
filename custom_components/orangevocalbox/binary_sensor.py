@@ -1,10 +1,6 @@
 """VocalBox binary sensor entities."""
 import logging
-from datetime import datetime, timedelta
-from homeassistant.components.binary_sensor import (
-    DEVICE_CLASS_CONNECTIVITY,
-    BinarySensorEntity,
-)
+from homeassistant.components.binary_sensor import BinarySensorEntity
 
 from .const import DOMAIN
 
@@ -48,11 +44,11 @@ class VocalStatus(BinarySensorEntity):
         for attr in self.coordinator.data.get("voiceMsg"):
             messages.append(
                 {
-                    f"id": attr["lineid"],
-                    f"phone_number": attr["caller"],
-                    f"datetime": attr["datetime"],
-                    f"duration": attr["duration"],
-                    f"link": attr["mp3file"],
+                    "id": attr["lineid"],
+                    "phone_number": attr["caller"],
+                    "datetime": attr["datetime"],
+                    "duration": attr["duration"],
+                    "link": attr["mp3file"],
                 }
             )
         return {"messages": messages}
