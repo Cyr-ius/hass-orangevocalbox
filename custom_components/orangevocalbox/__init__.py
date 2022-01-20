@@ -1,11 +1,9 @@
 """Orange VocalBox."""
-import asyncio
 import logging
 from datetime import timedelta
 
 import voluptuous as vol
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD
-from homeassistant.exceptions import PlatformNotReady
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
@@ -36,10 +34,7 @@ async def async_setup_entry(hass, config_entry):
         update_method=vocalbox.async_fetch_datas,
         update_interval=SCAN_INTERVAL,
     )
-    await coordinator.async_refresh()
-
-    if not coordinator.last_update_success:
-        raise PlatformNotReady
+    await coordinator.async_config_entry_first_refresh()
 
     if coordinator.data is None:
         return False
