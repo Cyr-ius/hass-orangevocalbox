@@ -24,20 +24,14 @@ class VocalBox:
         try:
             resp = await self._session.get(ORANGE_URI)
             if resp.status != 200:
-                raise VocalboxError(
-                    f"ERROR NotFound - HTTP {resp.status} ({resp.reason})",
-                    "cannot_connect",
-                )
+                raise VocalboxError(f"NotFound - HTTP {resp.reason}", resp.status)
 
             resp = await self._session.post(
                 url=f"{ORANGE_URI}/api/login",
                 data=json.dumps({"login": self._mail, "params": {}}),
             )
             if resp.status != 200:
-                raise VocalboxError(
-                    f"ERROR CheckLogin - HTTP {resp.status} ({resp.reason})",
-                    "cannot_connect",
-                )
+                raise VocalboxError(f"CheckLogin - HTTP {resp.reason}", resp.status)
             login = await resp.json()
             if login_encrypt := login.get("loginEncrypt"):
                 resp = await self._session.post(
@@ -53,8 +47,7 @@ class VocalBox:
                 if resp.status != 200:
                     content = await resp.json()
                     raise VocalboxError(
-                        f"CheckPass - HTTP {resp.status} ({content['message']})",
-                        "login_inccorect",
+                        f"CheckPass - HTTP {content['message']}", resp.status
                     )
         except requests.RequestException as error:
             raise VocalboxError("Request exception %s", error) from error
@@ -70,9 +63,7 @@ class VocalBox:
             self._messages = {"voiceMsg": [], "missedCall": []}
             resp = await self._session.get(url=f"{ORANGE_VOCALBOX_URI}/boxes")
             if resp.status != 200:
-                raise VocalboxError(
-                    f"ListBoxes - HTTP {resp.status} ({resp.reason})", "fetch_data"
-                )
+                raise VocalboxError(f"ListBoxes - HTTP {resp.reason}", resp.status)
             rboxes = await resp.json()
             if len(rboxes) != 1:
                 raise VocalboxError("ERROR Vocalbox not found", "fetch_data")
@@ -87,9 +78,7 @@ class VocalBox:
             )
             resp = await self._session.get(url=f"{ORANGE_VOCALBOX_URI}{mUri}")
             if resp.status != 200:
-                raise VocalboxError(
-                    f"ListMsg - HTTP {resp.status} ({resp.reason})", "fetch_data"
-                )
+                raise VocalboxError(f"ListMsg - HTTP {resp.reason}", resp.status)
             i = 0
             items = await resp.json()
             for item in items:
@@ -131,10 +120,7 @@ class VocalBox:
                 url=f"{ORANGE_VOCALBOX_URI}{mUri}", data=json.dumps(array_del_msg)
             )
             if resp.status != 200:
-                raise VocalboxError(
-                    f"ERROR DeleteMsg - HTTP {resp.status} ({resp.reason})",
-                    "delete_datas",
-                )
+                raise VocalboxError(f"DeleteMsg - HTTP {resp.reason}", resp.status)
         except requests.RequestException as error:
             raise VocalboxError("Delete exception %s", error) from error
 
