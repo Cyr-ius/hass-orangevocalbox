@@ -6,8 +6,8 @@ import voluptuous as vol
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
-
-from .const import ATTR_ID, ATTR_TYPE, DOMAIN, VALUES_TYPE, SERVICE_CLEAN
+from homeassistant.helpers.aiohttp_client import async_create_clientsession
+from .const import ATTR_ID, ATTR_TYPE, DOMAIN, JSON_HEADER, SERVICE_CLEAN, VALUES_TYPE
 from .vocalbox import VocalBox, VocalboxError
 
 SCAN_INTERVAL = timedelta(minutes=119)
@@ -23,10 +23,11 @@ async def async_setup(hass, config):
 
 async def async_setup_entry(hass, config_entry):
     """Set up VocalBox as config entry."""
+    session = async_create_clientsession(hass)
+    session._default_headers = JSON_HEADER
     vocalbox = VocalBox(
-        hass, config_entry.data[CONF_EMAIL], config_entry.data[CONF_PASSWORD]
+        config_entry.data[CONF_EMAIL], config_entry.data[CONF_PASSWORD], session
     )
-
     coordinator = DataUpdateCoordinator(
         hass,
         _LOGGER,
