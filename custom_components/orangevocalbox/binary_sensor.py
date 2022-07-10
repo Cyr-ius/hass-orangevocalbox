@@ -18,7 +18,7 @@ class VocalStatus(CoordinatorEntity, BinarySensorEntity):
 
     def __init__(self, coordinator):
         """Initialize the sensor."""
-        self.coordinator = coordinator
+        super().__init__(coordinator)
 
     @property
     def is_on(self):

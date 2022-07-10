@@ -7,6 +7,6 @@
     "requirements": [],
     "dependencies": [],
     "codeowners": ["@cyr-ius"],
-    "version": "1.6",
+    "version": "1.7",
     "iot_class": "cloud_polling"
 }
