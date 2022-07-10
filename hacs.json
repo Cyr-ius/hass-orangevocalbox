@@ -1,7 +1,6 @@
 {
   "name": "Orange VocalBox",
   "country": "FR",
-  "domains": ["binary_sensor"],
   "homeassistant": "0.109",
   "render_readme": true
 }
